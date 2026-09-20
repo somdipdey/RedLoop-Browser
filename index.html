@@ -504,6 +504,25 @@ function persist() {
   try { localStorage.setItem(LS_KEY, JSON.stringify(exportSessionObject())); }
   catch (e) { /* private mode / storage disabled - the app still works */ }
 }
+/** Wipe every trace of the current learner so the next person starts clean.
+ *  Clears the persisted copy first, so an interruption cannot leave stale data
+ *  behind, then rebuilds the in-memory state exactly as on a first visit. */
+function resetAll() {
+  try { localStorage.removeItem(LS_KEY); } catch (e) { /* storage unavailable */ }
+  State.saved = {};
+  State.learner_name = '';
+  State.progress = {};
+  State.pre_done = false; State.pre_score = null;
+  State.post_done = false; State.post_score = null;
+  State.sel_stage = D.STAGES[0];
+  State.nav = 'Home';
+  State.show_matrix = false;
+  State.active_project = null;
+  State.ui = {};
+  initState();          // re-seed the 8 modules as incomplete
+  persist();            // write the clean slate back
+}
+
 function restoreLocal() {
   try {
     const raw = localStorage.getItem(LS_KEY);
@@ -1063,7 +1082,20 @@ function pageHome() {
       `<p>${State.progress[n] ? '\u2705' : '\u2B1C'} <strong>${esc(n)}</strong> - ${esc(d)}</p>`).join('')}
     ${progressBar(done, D.MODULES.length, `Progress: ${done}/${D.MODULES.length} modules complete`)}
     ${textField('Your name (used on your certificate)', 'home_name', State.learner_name, 'e.g. Alex Taylor')}
-    <div class="btnrow"><button class="btn primary" type="button" data-go="Learn A4SRAI">Start learning \u2192</button></div>
+    <div class="btnrow">
+      <button class="btn primary" type="button" data-go="Learn A4SRAI">Start learning \u2192</button>
+      <button class="btn" type="button" data-restart
+        title="Clear everything stored in this browser and start the course fresh">\u21BB Restart course</button>
+    </div>
+    ${State.ui.confirm_restart ? alertBox('warn',
+      `<strong>Restart the course for a new learner?</strong> This permanently erases the name,
+       module progress, every risk register and both assessment scores held in this browser.
+       It cannot be undone &mdash; if you want to keep this work, cancel and use
+       <strong>Save session (JSON)</strong> on the Report &amp; Export page first.
+       <div class="btnrow">
+         <button class="btn primary" type="button" data-restart-confirm>Yes, erase and restart</button>
+         <button class="btn" type="button" data-restart-cancel>Cancel</button>
+       </div>`) : ''}
     <div class="caption">Runs fully offline in your browser. Nothing you type leaves your machine.</div>`;
 }
 
@@ -1866,6 +1898,21 @@ function wireEvents() {
       go(t.dataset.go); return;
     }
     if (t.dataset.complete !== undefined) { markDone(t.dataset.complete); render(); return; }
+
+    /* Restart course - two-step, because it destroys the learner's work */
+    if (t.hasAttribute('data-restart')) {
+      State.ui.confirm_restart = true; render(); return;
+    }
+    if (t.hasAttribute('data-restart-cancel')) {
+      State.ui.confirm_restart = false; render(); return;
+    }
+    if (t.hasAttribute('data-restart-confirm')) {
+      resetAll();
+      render();
+      flash('success', 'Course restarted \u2014 name, progress, registers and scores cleared. ' +
+        'Enter a new name below to begin.');
+      return;
+    }
     if (t.dataset.stage !== undefined) { State.sel_stage = t.dataset.stage; persist(); render(); return; }
     if (t.hasAttribute('data-copy')) {
       const pre = t.parentElement.querySelector('pre');

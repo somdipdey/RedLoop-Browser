@@ -1,5 +1,7 @@
 # RedLoop-Browser — Learn & practise AI red teaming across the Agile lifecycle with A4SRAI
 
+[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
+
 **RedLoop-Browser** is the browser build of **RedLoop**: a self-guided, fully offline learning tool
 that teaches the **Agile 4 Secure Responsible AI (A4SRAI)** framework, lets you practise AI red
 teaming safely, structure your findings across the lifecycle, and check your understanding — ending
@@ -90,6 +92,10 @@ Then enable Pages as in steps 4–7 above.
 > **Why `.nojekyll`?** GitHub Pages runs Jekyll by default, which ignores files and folders starting
 > with an underscore. The empty `.nojekyll` file turns that off and guarantees your files are served
 > exactly as uploaded. Keep it even though this build currently has no underscore-prefixed files.
+>
+> **macOS tip:** Finder hides dot-files, and dragging one into GitHub's uploader can silently drop
+> the leading dot (leaving a useless `nojekyll`). If that happens, use **Add file → Create new
+> file**, type `.nojekyll` as the name, leave the body empty and commit.
 
 ### Using a project subfolder or custom domain
 
@@ -119,6 +125,7 @@ python3 -m http.server 8000
 |------|---------|
 | `index.html` | **The entire application** — HTML, CSS, JavaScript, all learning content and the A4SRAI diagram, inlined in a single self-contained file (~180 KB) |
 | `README.md` | This file |
+| `LICENSE` | Apache License 2.0 (see [§8](#8-licence)) |
 | `.nojekyll` | Tells GitHub Pages to serve files verbatim |
 
 There is no `requirements.txt`, no `package.json`, no build step and no dependency of any kind.
@@ -141,6 +148,17 @@ There is no `requirements.txt`, no `package.json`, no build step and no dependen
 As you finish each section, click its **"Mark … complete"** button — the progress bar on Home and in
 the sidebar tracks your 8 modules.
 
+### Handing the browser to the next learner
+
+On **Home**, next to *Start learning*, there is a **↻ Restart course** button. It clears everything
+this browser holds — the learner's name, all 8 module completions, every risk register, the stage
+you had open and both assessment scores — so the next person begins from a genuinely clean slate.
+
+Because that is irreversible, it asks you to confirm first. If the current learner wants to keep
+their work, cancel and use **Save session (JSON)** on the Report & Export page, then restart; they
+can **Restore** that file later on any machine. This makes a single shared laptop or a lab machine
+safe to reuse between learners.
+
 ---
 
 ## 5. Notes
@@ -162,7 +180,10 @@ the sidebar tracks your 8 modules.
   provided.
 - **Multi-learner use.** Each visitor's browser is its own isolated session, so registers and
   progress never mix between people. Share the Pages URL with a cohort and everyone works
-  independently.
+  independently. On a *shared* machine, use **↻ Restart course** on Home between learners.
+- **Nothing to uninstall.** The only thing RedLoop-Browser stores is a single `localStorage` entry
+  (`redloop-browser-state-v1`). There are no cookies, no `sessionStorage`, no IndexedDB and no
+  service worker. **Restart course** removes that entry outright, so it leaves nothing behind.
 - **Accessibility.** Keyboard-navigable, semantic headings and landmarks, a skip link, live-region
   status messages, alt text on the diagram, and automatic light/dark theming that follows your
   system setting.
@@ -208,20 +229,60 @@ Session files are interchangeable between the two versions.
 - **Certificate button is greyed out** — complete the post-assessment and enter a name first.
 - **"Couldn't find any risks to add"** — your pasted table needs a **Risk** column (a Markdown pipe
   table or CSV both work).
+- **The previous learner's work is still showing** — click **↻ Restart course** on the Home page and
+  confirm. A browser refresh alone will not clear it, because progress is deliberately preserved
+  across refreshes.
+- **I restarted by mistake** — if you saved a session JSON beforehand, restore it on the Report &
+  Export page. Otherwise the data is gone; the confirmation step exists precisely because the reset
+  cannot be undone.
+- **GitHub Pages shows 404 and the Actions tab redirects to "new workflow"** — that redirect means
+  no Pages build has ever run. Commit any change to `main` to trigger one, or toggle **Settings →
+  Pages → Source** to *None*, save, then back to *Deploy from a branch* (`main`, `/ (root)`). Also
+  confirm your GitHub account email is verified, as Pages will not build otherwise.
 
 ---
 
-## 8. Credits & licence
+## 8. Licence
+
+RedLoop-Browser is released under the **Apache License, Version 2.0**. The full text is in the
+[`LICENSE`](LICENSE) file, and the canonical copy is at
+<https://www.apache.org/licenses/LICENSE-2.0>.
+
+In short, you may use, modify, distribute and build commercial work on RedLoop-Browser, including
+inside your own organisation, provided you:
+
+- keep the copyright and licence notice with any substantial portion you redistribute;
+- state clearly which files you changed, if you distribute a modified version; and
+- accept that the software is provided **"as is", without warranties or conditions of any kind**.
+
+Apache-2.0 also grants you a patent licence from the contributors, which terminates if you bring a
+patent claim alleging the software infringes your patents.
+
+**Trademarks and framework name.** The licence covers the software; it does **not** grant rights to
+the names **RedLoop**, **RedLoop-Browser** or **A4SRAI**, or to any associated marks (Apache-2.0,
+§6). If you publish a modified version, please give it a different name so learners can tell the
+frameworks apart.
+
+**Instructional content.** The learning material — stage explanations, the 29 control descriptions,
+the four scenarios, the glossary and the assessment bank — is covered by the same Apache-2.0 grant.
+Educators reusing it in courses are asked, but not required, to cite the IEEE Computer article
+below.
+
+**Not legal advice.** The mapping of A4SRAI components to the EU AI Act, NIST AI RMF and
+ISO/IEC 42001 is illustrative only and is not legal or compliance advice.
+
+---
+
+## 9. Credits & citation
 
 RedLoop and the **A4SRAI (Agile 4 Secure Responsible AI)** framework are the work of
 **Dr Somdip Dey**. The framework is published in IEEE Computer:
 [Implementing AI Red Teaming to Develop Secure Responsible AI Models](https://ieeexplore.ieee.org/abstract/document/11220004).
 
-The standards mapping to the EU AI Act, NIST AI RMF and ISO/IEC 42001 is illustrative and is **not
-legal advice**.
+If you use RedLoop-Browser in teaching or research, please cite that article.
 
 RedLoop-Browser never displays working attack payloads or harmful content — only before/after
 behaviour, so learners gain the disposition to think like an attacker without a usable capability to
 act as one.
 
-© Dr Somdip Dey 2026. All rights reserved.
+Copyright © Dr Somdip Dey 2026. Licensed under the Apache License, Version 2.0.
