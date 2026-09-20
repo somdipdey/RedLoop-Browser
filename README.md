@@ -215,18 +215,7 @@ scenarios, the GenAI prompt wording, the paste parser, the scoring rules, the de
 the coverage maths and the session-JSON format — is identical, and session files remain fully
 interchangeable between the two versions.
 
-### Content corrections in this build
 
-A factual review of the learning content produced four small corrections, applied here and not yet
-back-ported to `app.py`. The assessment is still eight questions covering the same constructs, and
-scores stay comparable across versions.
-
-| # | Correction | Why |
-|---|-----------|-----|
-| 1 | The EU AI Act row of the standards mapping now reads *"pre-market testing against pre-defined metrics and thresholds, including reasonably foreseeable misuse (Art. 9)"* | The previous wording, *"predeployment testing under worst-case conditions"*, overstated the law. Article 9(8) requires testing before placing on the market **against prior-defined metrics and probabilistic thresholds**, and Article 9(2)(b) sets the standard at **reasonably foreseeable misuse** — deliberately narrower than worst-case. |
-| 2 | Q4's feedback no longer refers to "Table 1" | That table is in the IEEE Computer article, not in the app, so the reference was unresolvable for a learner. |
-| 3 | Q8 now asks *how* to apply risk-tiering, and **Learn A4SRAI → Concept primers** teaches tiering explicitly | The old stem ("…which scaling challenge?") gave away its own answer ("Scalability…"), and tiering was only implied in the content. Both are fixed, restoring constructive alignment between what is taught and what is assessed. |
-| 4 | The footer and a new file header state the Apache-2.0 licence | The footer previously read *"All rights reserved"*, which contradicts an open-source licence. |
 
 ---
 
